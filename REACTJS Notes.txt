@@ -1,0 +1,139 @@
+Instead of manipulating the browser's DOM directly, React creates a virtual DOM in memory, where it does all the necessary manipulating, before making the changes in the browser DOM.React only changes what needs to be changed!
+
+We should create components for each module, or divide the screen in components. Components are independent and reusable bits of code. They serve the same purpose as JavaScript functions, but work in isolation and returns HTML via a render function.
+When creating a React Class Component, the component's name must start with an upper case letter. The component has to include the extends React.Component statement, this statement creates an inheritance to React.Component, and gives your component access to React.Component's functions. The component also requires a render() method, this method returns HTML.
+If there is a constructor() function in your component, this function will be called when the component gets initiated. The constructor function is where you initiate the component's properties. In React, component properties should be kept in an object called state.
+
+State: it is the common info that has to be shared throughout the application. The state object is where you store property values that belongs to the component. When the state object changes, the component re-renders. Always use the setState() method to change the state object, it will ensure that the component knows its been updated and calls the render() method (and all the other lifecycle methods).
+Example:
+this.setState({color: "blue"});
+setState() calls are batched and run asynchronously. Pass an object to be merged, or a function of previous state if you want multiple changes to state.
+
+props: it is the information shared with the component. Props are like function arguments, and you send them into the component as attributes. Props are passed to components via HTML attributes. Props are also how you pass data from one component to another, as parameters.
+Example: 
+const myelement = <Car brand="Ford" />;
+class Car extends React.Component {
+  render() {
+    return <h2>I am a {this.props.brand}!</h2>;
+  }
+}
+If your component has a constructor function, the props should always be passed to the constructor and also to the React.Component via the super() method. React Props are read-only! You will get an error if you try to change their value.
+
+When importing a component like:
+import ComponentName form './filepath'
+
+Once this is done just create a ComponentName tag in the return section like <ComponentName />
+We can iterate through the props like this using map function:
+		return this.props.todos.map((todo) => (
+            <TodoItem key={todo.id} todo={todo} />
+        ));
+
+
+Read about PropTypes.
+
+CLASS:
+A class is a type of function, and the properties are assigned inside a constructor() method. The constructor function is called automatically when the object is initialized.
+
+class Car {
+  constructor(name) {
+    this.brand = name;
+  }
+
+  present() {
+    return 'I have a ' + this.brand;
+  }
+}
+
+class Model extends Car {
+  constructor(name, mod) {
+    super(name);
+    this.model = mod;
+  }  
+  show() {
+      return this.present() + ', it is a ' + this.model
+  }
+}
+mycar = new Model("Ford", "Mustang");
+mycar.show();
+
+super should be in the first line of the child class and it inherits all the properties of the parent constructor.
+
+ARROW FUNCTION:
+fnName = ()=> {
+	//fnlogic here
+}
+IF single line of code then can write like this also: 
+fnName = ()=> "//logic here to return"
+
+Variables to be passed like this:
+fnName = (val)=>{
+	//val is the param passed;
+}
+IF only one param is there then.
+fnName = val ()=> {
+	//val is the param passed;
+}
+
+THIS keyword:
+In regular functions the this keyword represents "the object that called the function", which could be the window, the document, a button or whatever.
+With arrow functions, the this keyword always represents "the object that defined the arrow function".
+
+
+RENDER:
+React renders HTML to the web page by using a function called ReactDOM.render(). The ReactDOM.render() function takes two arguments, HTML code and an HTML element. The purpose of the function is to display the specified HTML code inside the specified HTML element.
+
+ROOT node:
+The root node is the HTML element where you want to display the result. It is like a container for content managed by React. It does NOT have to be a <div> element and it does NOT have to have the id='root'.
+
+
+
+LIFECYCLE: https://www.w3schools.com/react/react_lifecycle.asp
+
+Mounting, Updating and Unmounting.
+Mounting: putting elements into DOM.
+
+React has four built-in methods that gets called, in this order, when mounting a component:
+
+1. constructor() - first thing to call, to set states.
+2. getDerivedStateFromProps() - called right before rendering the element(s) in the DOM.
+3. render() - method is required, and is the method that actually outputs the HTML to the DOM.
+4. componentDidMount() - called after the component is rendered.
+The render() method is required and will always be called, the others are optional and will be called if you define them.
+
+Updating: A component is updated whenever there is a change in the component's state or props.
+
+React has five built-in methods that gets called, in this order, when a component is updated:
+
+1. getDerivedStateFromProps() - called when a component gets updated.
+2. shouldComponentUpdate() - method you can return a Boolean value that specifies whether React should continue with the rendering or not. The default value is true.
+3. render() - 
+4. getSnapshotBeforeUpdate() -method you have access to the props and state before the update, meaning that even after the update, you can check what the values were before the update. You should also include the componentDidUpdate() method, otherwise you will get an error.
+5. componentDidUpdate() - called after the component is updated in the DOM.
+
+The render() method is required and will always be called, the others are optional and will be called if you define them.
+
+Unmounting:
+The componentWillUnmount method is called when the component is about to be removed from the DOM.
+
+<button onClick={() => this.handleClick()}>
+The problem with this syntax is that a different callback is created each time the LoggingButton renders. In most cases, this is fine. However, if this callback is passed as a prop to lower components, those components might do an extra re-rendering. We generally recommend binding in the constructor or using the class fields syntax, to avoid this sort of performance problem.
+<button onClick={this.handleClick}>
+
+<button onClick={(e) => this.deleteRow(id, e)}>Delete Row</button>
+<button onClick={this.deleteRow.bind(this, id)}>Delete Row</button>
+In both cases, the e argument representing the React event will be passed as a second argument after the ID. With an arrow function, we have to pass it explicitly, but with bind any further arguments are automatically forwarded.
+
+A good rule of thumb is that elements inside the map() call need keys.
+function NumberList(props) {
+  const numbers = props.numbers;
+  const listItems = numbers.map((number) =>
+    // Correct! Key should be specified inside the array.
+    <ListItem key={number.toString()} value={number} />
+  );
+  return (
+    <ul>
+      {listItems}
+    </ul>
+  );
+}
+

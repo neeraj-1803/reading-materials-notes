@@ -1,0 +1,146 @@
+Javascript is single threaded and synchronous language, a function taking longer will maek page unresponsive for that time. It has API that are asynchronous.
+JavaScript Equality Table ==> https://dorey.github.io/JavaScript-Equality-Table/unified/
+coercion - implicit and explicit
+falsy value => undefined, null, NaN, -0, +0, "", false
+truthy value ==> [], {}, everything else.
+Object ==>  Everything that is not the primitive type. functions, arrays, etc.
+const o = new Object();
+o = {
+	1: "one",
+	"two": "two",
+	'three': "three"
+};
+o.1 ==> throws exception because 1 isn't able to be implicitly coerced, whereas o[1] or o["1"] will result proper result.
+
+const a ={
+	'a': 'a',
+	'b': 'b'
+};
+const b = a;
+a.a = "new value"; ==> this will change value for both a and b because they are stored as a reference instead of value. any changes to a will be reflected in b and vice-versa.
+const b  = Object.assign({}, a); ==> this will create an empty object and assign all the key and values of a to it. It does a shallow copy so if any obj is nested inside a, it'd still work as above, where change in one place will affect the other.
+
+All the primitve values do not have access to methods so JS auto boxs it ot give you access to them, that way you will have access to the prototypes.
+42.toString()==> throws error;
+but const num = 42;
+num.toString() ==> "42"
+
+var ==> valid till the function ends. can declare same name twice inside the scope. can access before declared(will be undefined), won't throw error. Hoisted to the top of the file. var has a function scope, not a block scope.
+const, let ==> valid till the next } occurence. both have a block scope.
+const a = 50
+a = 51 ==> throws error because you can't update it. we can't change the reference once assigned as const. we can still do something like a.a = "52" if a was a = {};
+let ==> can't declare twice within the scope.  can update the value.
+Hoisting ==> few parts of the program are moved to the top during the execution. Function definition, var type variables
+const abc = function(){}; ==> to avoiding the function being hoisted. It will throw ReferenceError when called before declaration.
+var abc = function(){}; ==> the variable name is hoisted but not the function. so when invoked abc(); it throws typeError.
+
+JS Engine ==> First just check the entire code for syntax error and then store all the var type variables and functions in the memory. then run the program.
+Everything in JS is kept under the global object 'window'.
+
+Closures ==> Functions that have access to variables that might have already left the scope.
+Example:-
+function sayHelloFnMaker(){
+	const message = "Hello!";
+	function sayHello(){
+		console.log(message);
+	}
+	return sayHello;
+}
+const helloFunc = sayHelloFnMaker();
+console.log(message); ==> this will throw Reference error with typeof message undefined because out of scope.
+console.log(helloFunc); ==> this will still orint "Hello!"
+
+function sayHelloFnMaker(){
+	const arr = [];
+	for(let i=0;i<5;i++){
+		arr.push(function(){console.log(i)});
+	}
+	return arr;
+}
+const helloFunc = sayHelloFnMaker();
+helloFunc[0] ==> it will return 0 as let has no scope outside the loop so it will bind the 0 to it, if we had used var instead of let, then it'd store the last known value of the variable.
+
+Immediately invoked functions : IIFE
+
+const count = (function(){
+	let i = 0;
+	return{
+	inc: function(){ i = i+1;},
+	get: function(){console.log(i)}
+	}
+
+})(); 
+
+count.get()=> it will print 0
+count.inc()
+count.get()==> it will be incremented to 1 this time.
+This way no one has access to the variable i and it's behavior , only functions are there that can be accessed.
+It is also not stored into the Global Object. Can be used to import libraries and API so that most of the variables use din declaring or using them do not pollute the global scope and that way we can still use the function name and variable names again.
+
+to solve the above problem of closure using IIFE.
+function sayHelloFnMaker(){
+	const arr = [];
+	for(var i=0;i<5;i++){
+		arr.push((function(){
+		return function(){console.log(i);}
+		})(i));
+	}
+	return arr;
+}
+
+const helloFunc = sayHelloFnMaker();
+what it does is, it will immediately push the value of i to the function and hence will be stored. so when we do helloFunc[2] ==> it will return 2 and not 5.
+
+MAP==>
+It is used to invoke a function on an array of values and it returns a NEW array with updated array values with the result of the function. Doesn't change original array, doesn't execute on array elements without values.
+function addOne(x){ return x+1; }
+var arr = [0,1,2,3,4];
+arr.map(addOne); => [1,2,3,4,5]
+
+FILTER==>
+It is used to invoke a function on an array of values and it only returns the array values that are true to that function. Doesn't change original array, doesn't execute on array elements without values.
+function isGreaterThanOne(a){ return x>1 }
+var arr = [0,1,2,3,4];
+arr.filter(isGreaterThanOne); ==> [2,3,4]
+
+REDUCE===>
+It is used to reduce the array to a single value. It executes a provided function for each value of the array (from left-to-right). The return value of the function is stored in an accumulator (result/total).Doesn't change original array, doesn't execute on array elements without values.
+function add(x,y){ return x+y } ==> this return gets stored in accumulator and is passed as an argument in the subsequent calls.
+arr.reduce(add) ==> 6
+
+FIND ===>
+The find() method returns the value of the first array element that passes a test function.
+var numbers = [4, 9, 16, 25, 29];
+var first = numbers.find(myFunction);
+
+function myFunction(value, index, array) {
+  return value > 18;
+}
+
+
+Javascript is asynchronous because of the API calls being handled by the browser and not by the JS. Once Browser is done with the API call execution, they push the same in Function Queue and then that is pushed to the execution stack which are synchronous.
+
+PROMISES==>
+The Promise object represents the eventual completion (or failure) of an asynchronous operation and its resulting value.
+const myPromise =
+  (new Promise(myExecutorFunc))
+  .then(handleFulfilledA)
+  .then(handleFulfilledB)
+  .then(handleFulfilledC)
+  .catch(handleRejectedAny);
+
+ASYNC/AWAIT ==> Read about it.
+
+THIS==>
+this is the reference in the current global context. To set this manually, we can use .bind(), .call(), .apply(), and arrow functions.
+
+
+Spread syntax (...) allows an iterable such as an array expression or string to be expanded in places where zero or more arguments (for function calls) or elements (for array literals) are expected, or an object expression to be expanded in places where zero or more key-value pairs (for object literals) are expected.
+function sum(x, y, z) {
+  return x + y + z;
+}
+
+const numbers = [1, 2, 3];
+
+console.log(sum(...numbers));
+// expected output: 6

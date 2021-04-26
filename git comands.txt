@@ -1,0 +1,93 @@
+commiting to new repo in git directly:
+
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/neeraj-1803/reading-materials-notes.git(origin-url)
+git push -u origin main
+
+if origin already set:
+git remote set-url origin new-url-here
+
+
+Committing to Git
+
+git diff --name-only --cached   ---> to check staged files
+git add . ---> to add everything to staging
+git commit -m "your message" ---> to commit with a message
+git reset "filepath" ---> to unstage a file.
+git diff --staged "filepath" --> to check the changes between staged file
+
+git reset "D:\8.3NewWrkspc\SelDeskPol\jssrc"  ---> to unstage
+
+git log branch_name  --> to view logs
+
+--->when head is detached at origin/branchName<----
+git checkout origin/branchName
+git checkout branchName
+
+--->when head is detached at origin/branchName<----
+git checkout -b newbranchNametocreate oldbranchname 
+git commit -m “commit message”
+git push origin newbranchNametocreate //if required to push local branch to server
+
+--->Working on GIT<---
+
+//create branch
+git branch branch_name
+
+//checkout
+git checkout branch_name
+
+//make changes and commit to own branch
+git add .
+git commit -m "message"
+git push origin branch_name
+
+//update to master before merge
+git fetch
+
+//rebase your branch to master(optional)
+git rebase -i origin/master
+
+//checkout master and merge to it
+git checkout master
+git merge branch_name
+//to write a commit message on the git console
+press "i"
+write your merge message
+press "esc"
+write ":wq"
+then press enter
+//push after commit is done.
+git push origin master
+
+//delete your branch_name
+git push origin :branch_name
+git branch -d branch_name
+
+------>Checking new local repo to bitbucket<-------
+open bitbucket
+click + from left hand side and select repositories.
+Select project and enter name.
+git init
+git add .
+git commit -m "message"
+git remote add origin <bitbucket_URL>
+git push -u origin --all
+
+---->cherry picking commits from a branch to other<-----
+git fetch --all
+git cherry-pick 62ecb3(commit id)
+
+----->Create a new branch and push to remote from a specific commit<------
+git branch branchName e32a7c6(commit id)
+git push origin branchName
+
+-->active branches<----
+Backend URL: https://bitbucket.org/konykps/selectivebackend/src/master/
+Build Doc URL: https://bitbucket.org/konykps/selectivebuildfiles/src/master/
+Mobile Old URL: https://bitbucket.org/konykps/selectivemobile_cip/src/master/
+Desktop URL: https://bitbucket.org/konykps/selectiveolb/src/master/
+Mobile/Desktop New URL: https://bitbucket.org/konykps/selectivemobilemvc/src/master/

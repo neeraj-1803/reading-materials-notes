@@ -1,0 +1,35 @@
+<link rel="stylesheet" href = "style.css"> => to link css stylesheet
+to access id => #
+to access class => .
+universal selector => *
+style selectors:
+	a,b => both will be selected
+	a b => all the b under a will be selected be it immediately under it or not
+	a>b => all b which is immediatedly under it(children of a) will be selected
+	a[] =>any attribute can be used under the brackets to specify the style property, can be used as conditional property to change styles.
+	a:attr => these are pseudo selectors, and any properties can be included here such as hover, click, etc.
+
+<meta name = "viewport" content = "width=device-width, initial-scale=1.0"> => to make the viewport be optimized according to device width and not shrink the page on a smaller device.
+@media (min-width: 600px){
+	//apply whatever style you want under this, this will be for anything i.e., 600px and above.
+}
+flexboxes work the same way to wrap the columns in next line auto without specifying the width.
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+https://www.w3schools.com/css/css3_flexbox_responsive.asp ==> to read more about using media queries and flexboxes together.
+
+Sass is a CSS pre-processor.
+Sass reduces repetition of CSS and therefore saves time. Cn be used to write css property rather easily in a code format.
+/* Define standard variables and values for website */
+$bgcolor: lightblue;
+$textcolor: darkblue;
+$fontsize: 18px;
+
+/* Use the variables */
+body {
+  background-color: $bgcolor;
+  color: $textcolor;
+  font-size: $fontsize;
+}
