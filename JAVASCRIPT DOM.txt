@@ -1,0 +1,20 @@
+append vs appendChild --> Both do the same thing, append can be used in place of appendChild. append can take multiple parameters while appendChild accepts only single parameter.
+innerText vs innerContent --> Both do the same thing to set text inside a tag. textContent displays all the content with spacing and indentations as typed in the html and innerText displays whatever is displayed on the screen.
+innerHTMl --> to be used to render html inside the element.
+remove --> to delete the html element.
+classList.add('') --> to add new class to element.
+classList.remove('') --> to remove new class to element.
+classList.toggle('classname') --> to toggle the class, it will add if not present or remove if present. we can also pass a boolean parameter along with it to determine the toggle functionality as fixed.
+
+getElementById('idhere')
+getElementsByClassName('classnamehere') --> it returns a collection which looks similar to array but it is not. we can directly use for loop or To use forEach loop we can convert the same into Array using `Array.from(etElementsByClassName('classnamehere'))`
+document.querySelector('css selector')--> pass # for id and .for class name. Selects only the first element it finds. can be used on any object not only document.
+const a = document.querySelector('css selector');
+const b = a.querySelector('css selector'); --> this is also valid syntax
+document.querySelectorAll('css selector')--> pass # for id and .for class name. Selects all the first element it finds and returns an array.
+
+.children --> return a collection of children element.
+parentElement --> to select the parent element.
+.closest('css selector') --> closest parent element with the css selector. selects only a single element.
+.nextElementSibling --> to select the next sibling . moves front
+.previousElementSibling --> to select the previos sibling. moves back
