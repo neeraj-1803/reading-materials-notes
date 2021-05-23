@@ -1,0 +1,144 @@
+Javascript is a prototype based language.
+let names = {
+    fname: "Dillion",
+    lname: "Megida"
+}
+console.log(names.fname);
+console.log(names.hasOwnProperty("mname"));
+
+The object variable names has only two properties - fname and lname . No methods at all.
+So where does hasOwnProperty come from?
+Well, it comes from the Object prototype. (__proto__ when you log the object)
+
+_proto__ property can be modified by explicitly stating that it should refer to another prototype using Object.create().
+
+function DogObject(name, age) {
+    let dog = Object.create(constructorObject); //creates a prototype with speak function, prototype chaining.
+    dog.name = name;
+    dog.age = age;
+    return dog;
+}
+let constructorObject = {
+    speak: function(){
+        return "I am a dog"
+    }
+}
+
+functions are also objects in JavaScript data types.
+
+JavaScript introduced the class keyword in ECMAScript 2015. It makes JavaScript seem like an OOP language. 
+But it is just syntatic sugar over the existing prototyping technique. 
+It continues its prototyping in the background but makes the outer body look like OOP. 
+
+class Animals {
+    constructor(name, specie) {
+        this.name = name;
+        this.specie = specie;
+    }
+    sing() {
+        return `${this.name} can sing`;
+    }
+    dance() {
+        return `${this.name} can dance`;
+    }
+}
+let bingo = new Animals("Bingo", "Hairy");
+console.log(bingo);
+
+
+same thing can be done using new and function prototype.
+
+function Animals(name, specie) {
+    this.name = name;
+    this.specie = specie;
+}
+Animals.prototype.sing = function(){
+    return `${this.name} can sing`;
+}
+Animals.prototype.dance = function() {
+    return `${this.name} can dance`;
+}
+let Bingo = new Animals("Bingo", "Hairy");
+
+
+Subclassing is a feature in OOP where a class inherits features from a parent class but possesses extra features which the parent doesn't. Using extends.
+The idea here is, for example, say you want to create a cats class. Instead of creating the class from scratch - stating the name, age and species property afresh, 
+you'd inherit those properties from the parent animals class.
+This cats class can then have extra properties like color of whiskers. Also known as Polymorphism.
+
+class Animals {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+    sing() {
+        return `${this.name} can sing`;
+    }
+    dance() {
+        return `${this.name} can dance`;
+    }
+} 
+class Cats extends Animals {
+    constructor(name, age, whiskerColor) {
+        super(name, age);
+        this.whiskerColor = whiskerColor;
+    }
+    whiskers() {
+        return `I have ${this.whiskerColor} whiskers`;
+    }
+}
+let clara = new Cats("Clara", 33, "indigo");
+
+console.log(clara.sing()); // "Clara can sing"
+console.log(clara.whiskers()); // "I have indigo whiskers"
+
+Same can be done using Object.create as below:
+
+function Animals(name, age) {
+    let newAnimal = Object.create(animalConstructor);
+    newAnimal.name = name;
+    newAnimal.age = age;
+    return newAnimal;
+}
+let animalConstructor = {
+    sing: function() {
+        return `${this.name} can sing`;
+    },
+    dance: function() {
+        return `${this.name} can dance`;
+    }
+}
+function Cats(name, age, whiskerColor) {
+    let newCat = Animals(name, age);
+    Object.setPrototypeOf(newCat, catConstructor); //takes in two arguments - the object and the desired prototype.
+    newCat.whiskerColor = whiskerColor;
+    return newCat;
+}
+let catConstructor = {
+    whiskers() {
+        return `I have ${this.whiskerColor} whiskers`;
+    }
+}
+Object.setPrototypeOf(catConstructor, animalConstructor);
+const clara = Cats("Clara", 33, "purple");
+clara.sing();
+clara.whiskers();
+
+A constructor function name usually starts with a capital letter — this convention is used to make constructor functions easier to recognize in code.
+new keyword is used to tell the browser we want to create a new object instance.
+to provide inheritance, objects can have a prototype object, which acts as a template object that it inherits methods and properties from.
+
+the following code, adds a new method to the constructor's prototype property:
+Person.prototype.farewell = function() {
+  alert(this.name.first + ' has left the building. Bye for now!');
+};
+
+function Person(first, last, age, gender, interests) {
+}
+let person1 = new Person('Tammi', 'Smith', 32, 'neutral', ['music', 'skiing', 'kickboxing']);
+//after assignment we add a new prototype and it still updates the person1 to have access to farewell
+Person.prototype.farewell = function() {
+  alert(this.name.first + ' has left the building. Bye for now!');
+};
+
+arrow function doesn't have a default prototype property
