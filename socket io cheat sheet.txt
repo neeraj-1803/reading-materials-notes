@@ -1,0 +1,81 @@
+Used for a persisting connection between a client and a server.
+Avoids creating and setting up multiple connections, when needed to have an application open for longer time.
+
+If you emit from the server, it can be listened/used at server and vice-versa.
+When emit from server side, sends data to all the clients, including the one that made the request.
+
+socket.broadcast.emit('name') //emits to all the client except the one that created the request.
+
+socket.join('room-name') //a user can join multiple rooms.
+
+//Offline Messages
+when we do socket.disconnect(), it disconnects the server and sends all the message at once when reconnected.
+ if we do not want this then we should use socket.volatile.emit();
+
+
+//SERVER SIDE
+const io = require('socket.io')(3000,{
+    cors:{
+        origin: ['client url']
+    }
+}); //create a socket with the port number of server.
+
+io.on("connection", socket => {
+    console.log(socket.id); //gives random socket id that is created.
+    //runs everytime a socket connection takes place.
+})
+
+socket.on('custom-event', (num, str, obj) => {
+    console.log(num,str,obj); //prints the custom-event emitted/sent from the client side, can be any set of data.
+})
+
+io.on("connection", socket => {
+    console.log(socket.id);
+    socket.on('custom-event', message => {
+    console.log(message);
+    socket.broadcast.emit('some-event', message); //this emits to all the client except the one that created the request.
+    })
+})
+
+io.on("connection", socket => {
+    console.log(socket.id);
+    socket.on('custom-event', (message, room) => {
+    if(room === ''){
+        socket.broadcast.emit('some-event', message); 
+    }else{
+        socket.to(room).emit('some-event', message);//sends the message to only the room, 
+        //also doesn't sent the emit to the request that created it/
+    }
+    })
+
+    socket.on("join-room", room => {
+        socket.join(room); //to join the custom room emitted from client.
+    })
+
+    socket.on('join-room', (room, cbFn)=>{
+        socket.join(room);
+        cbFn(); //this will call the callback function on the client side.
+        //useful in scenario where you want to show the user the request status or something.
+    })
+})
+
+
+
+//CLIENT SIDE
+import {io} from 'socket.io-client';
+
+const socket = io('server url');
+socket.on('connect', ()=>{
+    console.log(`You connected with id ${socket.id}`);
+    //executes when the socket is connected.
+})
+
+socket.emit('custom-event', 10, 'some string', {a: 10}); //to send data to the server.
+
+socket.emit('custom-event', 'some message', room) //add the room id to make sure it is not broadcasted to everyone.
+
+socket.emit("join-room", 'room-name'); //emit a room name from client side to be joined.
+
+socket.emit("join-room", 'room-name2', callbackFunc => {
+    someUIChange after the server operation is done.
+}); //whenever passing a callback function, it should be the last parameter.

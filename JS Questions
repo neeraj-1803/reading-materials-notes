@@ -1,0 +1,286 @@
+Coercion? -> Conversion between to different built in types. Two types: implicit and explicit
+Implicit-> through typecasting
+var a = "42";
+var b = Number( a );
+a;				// "42" -- still string
+b;				// 42 -- the number!
+Explicit-> 
+var a = "42";
+var b = a * 1;	// "42" implicitly coerced to 42 here
+a;				// "42" -- still string
+b;				// 42 -- the number!
+
+
+typeof in JS?
+
+Undefined -> "undefined"
+Null-> "object" (see below)
+Boolean->	"boolean"
+Number->	"number"
+BigInt-> (new in ECMAScript 2020)	"bigint"
+String->	"string"
+Symbol-> (new in ECMAScript 2015)	"symbol"
+Function object-> (implements [[Call]] in ECMA-262 terms)	"function"
+Any other object->	"object"
+
+typeof NaN === 'number'; // Despite being "Not-A-Number"
+typeof Number('1') === 'number';      // Number tries to parse things into numbers
+typeof Number('shoe') === 'number';   // including values that cannot be type coerced to a number
+typeof (typeof 1) === 'string'; // typeof always returns a string
+typeof String(1) === 'string'; // String converts anything into a string, safer than toString
+typeof !!(1) === 'boolean'; // two calls of the ! (logical NOT) operator are equivalent to Boolean()
+typeof [1, 2, 4] === 'object';
+typeof null === 'object';
+typeof function() {} === 'function';
+typeof class C {} === 'function';
+
+use-strict ??
+It is entered at top of js program or function and it helps write safer JS code by throwing an error if a global variable is created. Assignment to a non-writable property, 
+Assignment to a non-writable global, Assignment to a new property on a non-extensible object, duplicate argument names
+a number beginning with a 0, such as 0644, is interpreted as an octal number
+
+Difference between null and undefined?
+Something hasn't been initialized : undefined.
+Something is currently unavailable: null.
+
+Same-origin policy?
+The same-origin policy prevents JavaScript from making requests across domain boundaries. An origin is defined as a combination of URI scheme, hostname, and port number. 
+This policy prevents a malicious script on one page from obtaining access to sensitive data on another web page through that page's Document Object Model.
+
+Polyfill?
+Some code that allow you to have some specific functionality that you expect in current or “modern” browsers to also work in other browsers that do not have the support for that functionality built in.
+
+
+theoretical sum of the consecutive numbers using a variation of Gauss Sum.
+Formula: [(N * (N + 1)) / 2] - [(M * (M - 1)) / 2];
+where N is the upper bound and M is the lower bound
+
+
+CLOSURES?
+
+Closures are useful because they let you associate data (the lexical environment) with a function that operates on that data. 
+This has obvious parallels to object-oriented programming, where objects allow you to associate data (the object's properties) with one or more methods.
+function makeAdder(x) {
+  return function(y) {
+    return x + y;
+  };
+}
+var add5 = makeAdder(5);//these are closures add5 and add10
+var add10 = makeAdder(10);
+console.log(add5(2));  // 7
+console.log(add10(2)); // 12
+
+makeAdder is a function factory. It creates functions that can add a specific value to their argument.
+add5 and add10 are both closures. They share the same function body definition, but store different lexical environments. 
+In add5's lexical environment, x is 5, while in the lexical environment for add10, x is 10.
+
+Languages such as Java allow you to declare methods as private, meaning that they can be called only by other methods in the same class.
+
+JavaScript does not provide a native way of doing this, but it is possible to emulate private methods using closures. 
+Private methods aren't just useful for restricting access to code. They also provide a powerful way of managing your global namespace.
+var counter = (function() {
+  var privateCounter = 0;
+  function changeBy(val) {
+    privateCounter += val;
+  }
+  return {
+    increment: function() {
+      changeBy(1);
+    },
+
+    decrement: function() {
+      changeBy(-1);
+    },
+
+    value: function() {
+      return privateCounter;
+    }
+  };
+})();
+//this was an IIFE
+The lexical environment contains two private items: a variable called privateCounter, and a function called changeBy. 
+You can't access either of these private members from outside the anonymous function. 
+Instead, you can access them using the three public functions that are returned from the anonymous wrapper.
+
+For loop with var inside closures cause issues so use let instead of var, so every closure binds the block-scoped variable, meaning that no additional closures are required.
+Another alternative could be to use forEach() to iterate over
+
+Private counter using closure:
+function counter() {
+  var _counter = 0;
+  // return an object with several functions that allow you
+  // to modify the private _counter variable
+  return {
+    add: function(increment) { _counter += increment; },
+    retrieve: function() { return 'The counter is currently at: ' + _counter; }
+  }
+}
+
+// error if we try to access the private variable like below
+// _counter;
+
+// usage of our counter function
+var c = counter();
+c.add(5); 
+c.add(9); 
+
+// now we can access the private variable in the following way
+c.retrieve(); // => The counter is currently at: 14
+
+
+Check if array?
+if(Object.prototype.toString.call(arrayList) === '[object Array]') {
+  console.log('Array!');
+}
+
+Array.isArray(arrayList);
+
+Empty an array?
+
+arr = []; //this will create and point to new empty array the references to arr will still point to old value.
+arr.length = 0;//this will update all the references too.
+arrayList.splice(0, arrayList.length); //this will update all the references too.
+while(arrayList.length) {
+  arrayList.pop();
+} //this will update all the references too.
+
+
+Classes??
+
+classes are not hoisted. A class cannot be used before it is declared.
+A class can inherit properties and methods from other classes by using the extend keyword.
+All the syntaxes inside the class must follow the strict mode(‘use strict’) of javascript. Error will be thrown if the strict mode rules are not followed.
+
+
+generator functions???
+A special class of functions.
+They can be stopped midway and then continue from where it had stopped. Generator functions are used to return iterators.
+when called, they do not execute the code, instead they return a generator object . This generator object handles the execution.
+The generator object consists of a method called next() , this method when called, executes the code until the nearest yield statement, and returns the yield value.
+
+function* genFunc(){
+  yield 3;
+  yield 4;
+}
+genFunc(); // Returns Object [Generator] {}
+genFunc().next(); // Returns {value: 3, done:false}
+
+WeakSet and WeakMap ???
+Just like Set, WeakSet is also a collection of unique and ordered elements with some key differences:
+Weakset contains only objects and no other type.
+An object inside the weakset is referenced weakly. This means, if the object inside the weakset does not have a reference, it will be garbage collected.
+Unlike Set, WeakSet only has three methods, add() , delete() and has() .
+
+const newSet2 = new WeakSet([3, 4, 5]); //Throws an error
+let obj1 = {message:"Hello world"};
+const newSet3 = new WeakSet([obj1]);
+console.log(newSet3.has(obj1)); // true
+
+WeakMap is similar to Map with key differences:
+The keys and values in weakmap should always be an object.
+If there are no references to the object, the object will be garbage collected.
+
+const map2 = new WeakMap();
+map2.set('Vivek', 23); // Throws an error
+let obj = {name:"Vivek"};
+const map3 = new WeakMap();
+map3.set(obj, {age:23});
+
+Destructuring Object:  
+const classDetails = {
+  strength: 78,
+  benches: 39,
+  blackBoard:1
+}
+
+const {strength:classStrength, benches:classBenches,blackBoard:classBlackBoard} = classDetails;
+
+console.log(classStrength); // Outputs 78
+console.log(classBenches); // Outputs 39
+console.log(classBlackBoard); // Outputs 1
+
+CODE CHALLENGES:
+
+
+let x= {}, y = {name:"Ronny"},z = {name:"John"};
+x[y] = {name:"Vivek"};
+x[z] = {name:"Akki"};
+console.log(x[y]); //{name:"Akki"};
+
+While setting a property of an object, javascript coerces the parameter into a string.
+Therefore, since y is an object, it will be converted to ‘object Object’.
+Both x[y] and x[z] are referencing the same property.
+
+console.log("A" - 1); //NaN
+
+var x = 23;
+
+(function(){
+  var x = 43;
+  (function random(){
+    x++;
+    console.log(x); //NaN
+    var x = 21;
+  })();
+})();
+
+This is an IIFE and has functional scope inside the random function the x is hoisted but never initialized before printing.
+
+
+const a = function(){
+    console.log(this);
+    const b = {
+      func1: function(){
+        console.log(this);
+      }  
+    }
+    const c = {
+      func2: ()=>{
+        console.log(this);
+      }
+    }
+    b.func1();
+    c.func2();
+  }
+  a();
+
+global/window object
+object "b"
+global/window object //Since we are using arrow function inside func2, this keyword refers to the global object.
+
+
+// Each time bigFunc is called, an array of size 700 is being created,
+// Modify the code so that we don't create the same array again and again
+function bigFunc(element){
+  let newArray = new Array(700).fill('♥');
+  return newArray[element];
+}
+console.log(bigFunc(599)); // Array is created
+console.log(bigFunc(670)); // Array is created again
+
+function bigFunc(){
+  let newArray = new Array(700).fill('♥');
+  return (element) => newArray[element];
+}
+let getElement = bigFunc(); // Array is created only once
+getElement(599); //599th element
+getElement(670);  //670th element
+
+// The following code outputs 2 and 2 after waiting for one second
+// Modify the code to output 0 and 1 after one second.
+
+function randomFunc(){
+  for(var i = 0; i < 2; i++){
+    setTimeout(()=> console.log(i),1000);
+  }
+}
+randomFunc();
+
+We can change var to let in for loop or use closures
+function randomFunc(){
+  for(var i = 0; i < 2; i++){
+  (function(i){
+      setTimeout(()=>console.log(i),1000);
+    })(i);
+  }
+}

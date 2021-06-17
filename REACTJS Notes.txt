@@ -116,7 +116,9 @@ Unmounting:
 The componentWillUnmount method is called when the component is about to be removed from the DOM.
 
 <button onClick={() => this.handleClick()}>
-The problem with this syntax is that a different callback is created each time the LoggingButton renders. In most cases, this is fine. However, if this callback is passed as a prop to lower components, those components might do an extra re-rendering. We generally recommend binding in the constructor or using the class fields syntax, to avoid this sort of performance problem.
+The problem with this syntax is that a different callback is created each time the LoggingButton renders. In most cases, this is fine. However, if this callback is passed as a prop to lower components, 
+those components might do an extra re-rendering. 
+We generally recommend binding in the constructor or using the class fields syntax, to avoid this sort of performance problem.
 <button onClick={this.handleClick}>
 
 <button onClick={(e) => this.deleteRow(id, e)}>Delete Row</button>
@@ -137,3 +139,226 @@ function NumberList(props) {
   );
 }
 
+useContext:
+It is used to pass context throughout the components instead of having to drill down them through props.
+
+var ThemeContext = React.createContext();
+var [time, setTime] = useState();
+<ThemeContext.Provider value={time, setTime}>
+  <Components>
+</ThemeContext.Provider>
+
+then inside the ThemeContext you can use the params passed in value.
+var {getTimeContext, getUpdatedTimeFunc} = useContext({time, setTime});
+
+However in class component we have to create a Consumer to use it.
+import ThemeContext
+then <ThemeContext.Consumer> will be wrapped wherever need to be used.
+
+We can create a custom hook and use it anywhere as well, create a new JS file and inside it:
+
+const Timeupdate = React.createContext();
+const UpdateTimeFunc = React.createContext();
+export function useTime(){
+  return useContext(Timeupdate);
+}
+export function useUpdateTime(){
+  return useContext(UpdateTimeFunc);
+}
+
+//these two functions will be imported in the components to utilize the context.
+
+export function ThemeContext({ children }){
+  //this function will be use to wrap the Provider at the topmost element where the state is created to be used across.
+  const [time, setTime] = useState();
+  function toggleTime(){
+    setTime(prevTime => !prevTime);
+  }
+  <Timeupdate.Provider value={time}>
+    <UpdateTimeFunc.Provider value={toggleTime}>
+      {children}
+    </UpdateTimeFunc.Provider>
+  </Timeupdate.Provider>
+}
+
+inside the top parent component:
+
+import {ThemeContext} from ''
+render(
+  <ThemeContext>
+    <ChildComponent />
+  </ThemeContext>
+
+)
+
+
+inside Child Component:
+
+import {useTime, useUpdateTime} from ''
+
+const abc = useTime();
+const cde = useUpdateTime();
+
+useReducer --> For state management instead of using Redux. Local State Management at the Component Level.
+//Example component
+function Counter() {
+  const [count, setCount] = useState(0)
+
+  function changeCount(amount) {
+    setCount(prevCount => prevCount + amount)
+  }
+
+  function resetCount() {
+    setCount(0)
+  }
+
+  return (
+    <>
+      <span>{count}</span>
+      <button onClick={() => changeCount(1)}>+</button>
+      <button onClick={() => changeCount(-1)}>-</button>
+      <button onClick={() => resetCount()}>Reset</button>
+    </>
+  )
+}
+
+//using useReducer hook.
+
+const ACTIONS = {
+  INCREMENT: 'increment',
+  DECREMENT: 'decrement',
+  RESET: 'reset',
+  CHANGE_COUNT: 'change-count'
+}
+//this is the reducer function which is called by dispatch with a type and payload,
+it decides based on the action type what operation to perform.
+function reducer(count, action) {
+  switch (action.type) {
+    case ACTIONS.INCREMENT:
+      return count + 1
+    case ACTIONS.DECREMENT:
+      return count - 1
+    case ACTIONS.RESET:
+      return 0
+    case ACTIONS.CHANGE_COUNT:
+      return count + action.payload.amount
+    default:
+      return count
+  }
+}
+
+function Counter() {
+  const [count, dispatch] = useReducer(reducer, 0) //takes in reducer function and state object.
+
+  return (
+    <>
+      <span>{count}</span>
+      <button onClick={() => dispatch({ type: ACTIONS.INCREMENT })}>
+        +
+      </button>
+      <button onClick={() => dispatch({ type: ACTIONS.DECREMENT })}>
+        -
+      </button>
+      <button onClick={() => {
+        dispatch({
+          type: ACTIONS.CHANGE_COUNT,
+          payload: { amount: 5 }
+        })
+      }}>
+        Add 5
+      </button>
+      <button onClick={() => dispatch({ type: ACTIONS.RESET })}>
+        Reset
+      </button>
+    </>
+  )
+}
+
+
+useReducer with useContext to replace Reduc and do Global State Management.
+with use reducer you no longer need useState to manage state. and to share the state globally we use useContext.
+
+//Custom Hook using useReducer and useContext.
+
+const Timeupdate = React.createContext();
+export function useTime(){
+  return useContext(Timeupdate);
+}
+
+export const ACTIONS = {
+  INCREMENT: 'increment',
+  DECREMENT: 'decrement',
+  RESET: 'reset',
+  CHANGE_COUNT: 'change-count'
+}
+//this is the reducer function which is called by dispatch with a type and payload,
+it decides based on the action type what operation to perform.
+export unction reducer(count, action) {
+  switch (action.type) {
+    case ACTIONS.INCREMENT:
+      return count + 1
+    case ACTIONS.DECREMENT:
+      return count - 1
+    case ACTIONS.RESET:
+      return 0
+    case ACTIONS.CHANGE_COUNT:
+      return count + action.payload.amount
+    default:
+      return count
+  }
+}
+
+//these two functions will be imported in the components to utilize the context.
+
+export function ThemeContext({ children }){
+  //this function will be use to wrap the Provider at the topmost element where the state is created to be used across.
+  const intialValue = 0;
+  const [count, dispatch] = useReducer(reducer, intialValue) //initial value is provided insted of initial state and count variable is the same as the state name.
+  <Timeupdate.Provider value={{countState: count, countDispatch: dispatch}}> //dispatch function is also passed as value.
+      {children}
+  </Timeupdate.Provider>
+}
+
+now inside child component wherever needed to be used.
+import {useTime, useUpdateTime} from ''
+
+const abc = useTime();
+abc.countState --> this will return the state value;
+abc.dispatch({ type: ACTIONS.RESET }) --> this needs to be called with type and payload to update the state value.
+
+
+React Router DOM:
+
+Use to navigate to a path inside the SPA.
+
+import {BrowserRouter, Switch, Route} fro 'react-router-dom';
+
+render(
+  <BrowserRouter> //to be wrapped above parent container.
+    <div>
+      <Switch> //used to check only one condition and break it as if a switch loop would work.
+        <Route path="/" exact component={Home} /> //if exact is not used then it will match for all the cases.
+        <Route path="/about" component={About} />
+        <Route path="/shop" component={Shop} />
+      </Switch>
+    </div>
+  </BrowserRouter>
+);
+
+to move to specific path in the router dom: 
+import {Link} from 'react-router-dom';
+
+<Link to="/about">
+Click to goto About page
+</Link>
+
+//the page that we link to we get a prop 'match' in that component with the params and route path and other details.
+
+Lifecycle of react:
+
+getDerivedStateFromProps: Invoked right before calling render() and is invoked on every render. This exists for rare use cases where you need derived state. Worth reading if you need derived state.
+componentDidMount: Executed after first rendering and where all AJAX requests, DOM or state updates, and set up event listeners should occur.
+shouldComponentUpdate: Determines if the component will be updated or not. By default it returns true. If you are sure that the component doesn't need to render after state or props are updated, you can return false value. It is a great place to improve performance as it allows you to prevent a re-render if component receives new prop.
+getSnapshotBeforeUpdate: Executed right before rendered output is committed to the DOM. Any value returned by this will be passed into componentDidUpdate(). This is useful to capture information from the DOM i.e. scroll position.
+componentDidUpdate: Mostly it is used to update the DOM in response to prop or state changes. This will not fire if shouldComponentUpdate() returns false.
+componentWillUnmount It will be used to cancel any outgoing network requests, or remove all event listeners associated with the component.

@@ -1,0 +1,14 @@
+lazy loading
+controlled vs uncontrolled components
+usecontext can replace redux?
+higher order components
+FORMIX package
+useRef
+lifecycle
+can we re render without change of states
+use of fragment
+context api
+redux
+react router params
+Responsive design in react
+GraphQL
