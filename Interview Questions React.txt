@@ -1,12 +1,79 @@
 lazy loading
-controlled vs uncontrolled components
+controlled vs uncontrolled components 
+A Controlled Component is one that takes its current value through props and notifies changes through callbacks like onChange. 
+A parent component "controls" it by handling the callback and managing its own state and passing the new values as props to the controlled component. You could also call this a "dumb component".
+
+An Uncontrolled Component is one that stores its own state internally, and you query the DOM using a ref to find its current value when you need it. This is a bit more like traditional HTML.
+
+// Controlled:
+<input type="text" value={value} onChange={handleChange} />
+
+// Uncontrolled:
+<input type="text" defaultValue="foo" ref={inputRef} />
+// Use `inputRef.current.value` to read the current value of <input>
+
+
 usecontext can replace redux?
-higher order components
-FORMIX package
-useRef
+
+For larger apps where it is likely that a single event changes several parts of the state and hence the UI. It is advised to use redux, as it uses container components between the store and the UI, though; 
+they prevent the UI from re-rendering unnecessarily when the store updates. 
+That’s the main purpose of connect() in the react-redux package: extracting just the useful bits out of a large global state object and passing them down as props to the UI.
+
+When you have a large, complex state tree, and each of your many components only cares about a small part of it, you don’t want to re-render every single component 
+when a piece of inconsequential data changes in some far-off corner of your application. Redux container components prevent these re-renders via their mapStateToProps function, 
+which transforms relevant global state values into props and passes them down to the UI.
+
+
+higher order components --> a higher-order component is a function that takes a component and returns a new component. Used for reusing component logic.
+We can see that higherOrderComponent takes a component (WrappedComponent) and returns another component inside of it. With this technique, 
+whenever we need to reuse a particular component’s logic for something, 
+we can create a HOC out of that component and use it wherever we like.
+
+
+import React from 'react';
+// Take in a component as argument WrappedComponent
+const higherOrderComponent = (WrappedComponent) => {
+// And return another component
+  class HOC extends React.Component {
+    render() {
+      return <WrappedComponent />;
+    }
+  }
+  return HOC;
+};
+
+
+FORMIK package
+useRef --> Updating state triggers a component re-rendering, while updating a reference doesn’t trigger, The state update is asynchronous (the state variable is updated after re-rendering), 
+while the reference update is synchronous (the updated reference value is available right away).
 lifecycle
-can we re render without change of states
-use of fragment
+
+import { useRef } from 'react';
+
+function LogButtonClicks() {
+  const countRef = useRef(0);
+  
+  const handle = () => {
+    countRef.current++;
+    console.log(`Clicked ${countRef.current} times`);
+  };
+
+  console.log('I rendered!');
+
+  return <button onClick={handle}>Click me</button>;
+}
+
+
+Uses: Accessing DOM elements, Accessing DOM elements in useEffect
+
+
+can we re render without change of states --> In class components, you can call this.forceUpdate() to force a rerender. 
+In function components, there's no equivalent of forceUpdate, but you can contrive a way to force updates with the useState hook.
+
+
+use of fragment --> React Fragments do not produce any extra elements in the DOM, which means that a Fragment’s child components will be rendered without any wrapping DOM node. 
+React Fragments enable you to group multiple sibling components without introducing any unnecessary markup in the rendered HTML.
+
 context api
 redux
 react router params
